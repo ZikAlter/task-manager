@@ -1,4 +1,4 @@
-export interface IUser { // то что будем записывать в store
+export interface IUser {
     success: string
     surname: string
     firstName: string

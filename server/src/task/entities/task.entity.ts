@@ -12,7 +12,7 @@ export class Task {
     @Column({name: 'fid_importance', type: 'varchar'})
     importance: string
 
-    @ManyToOne(() => User, (user) => user.categories) // сам внешний ключ
+    @ManyToOne(() => User, (user) => user.categories)
     @JoinColumn({name: 'fid_user'})
     user: User
 

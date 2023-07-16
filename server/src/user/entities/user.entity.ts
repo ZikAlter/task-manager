@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {E_Role} from "../types";
 import {Task} from "../../task/entities/task.entity";
 
@@ -12,10 +12,6 @@ export class User {
 
     @Column({name: 'password', type: 'varchar'})
     password: string
-
-    /*@ManyToOne(() => Role, (role) => role.user, )
-    @JoinColumn({name: 'fid_role', referencedColumnName: 'title_role'})
-    role: User*/
 
     @Column({name: 'role', type: 'varchar', default: E_Role["Admin"]})
     role: E_Role

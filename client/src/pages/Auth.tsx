@@ -14,19 +14,19 @@ const Auth: FC = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
 
-    const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => { // при авторизации
+    const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         try {
             e.preventDefault()
             const data = await AuthService.login({login, password})
             if (data) {
-                setTokenToLocalStorage('token', data.token) // записываем данные в localStorage
-                dispatch(logan(data)) // сохраняем данные в Store redux toolkit
+                setTokenToLocalStorage('token', data.token)
+                dispatch(logan(data))
                 toast.success('Авторизация пройдена успешно')
-                navigate('/') // отправлять пользователя после авторизации на главную страницу
+                navigate('/')
             }
         } catch (err: any) {
-            const error = err.response?.data.message // если получена ошибка
-            toast.error(error.toString()) // показать сообщение об ошибке
+            const error = err.response?.data.message
+            toast.error(error.toString())
         }
     }
     return (
@@ -43,7 +43,6 @@ const Auth: FC = () => {
                         Войти
                     </button>
                 </div>
-
             </form>
         </div>
     );

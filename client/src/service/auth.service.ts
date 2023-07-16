@@ -3,7 +3,7 @@ import {instance} from "../api/axios.api.ts";
 
 export const AuthService = {
     async login(userData: IUserData): Promise<IUser | undefined> {
-        const {data} = await instance.post<IUser>('auth/login', userData) // запрос на авторизацию
+        const {data} = await instance.post<IUser>('auth/login', userData)
         return data
     },
     async getMe(): Promise<IUser | undefined> {

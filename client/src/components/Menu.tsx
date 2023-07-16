@@ -13,7 +13,7 @@ const Menu: FC = () => {
     const navigate = useNavigate()
 
     const isAuth = useAuth()
-    const isData = useData()  // вытаскиваем данные из Store
+    const isData = useData()
     let userSurname, userFirstname, userPatronymic, userRole
     if (isData.isAuth === true) {
         userSurname = JSON.stringify(isData.user.surname)
@@ -30,13 +30,13 @@ const Menu: FC = () => {
 
     }
 
-    const logoutHandler = () => { // при выходе из сайта
+    const logoutHandler = () => {
         dispatch(logout())
         removeTokenFromLocalStorage('token')
         toast.success('Вы вышли из системы')
         navigate('/')
     }
- /*{userSurname} {userSurname} {userPatronymic} ({userRole}) */
+
     return (
         <>
             {isAuth ? (
