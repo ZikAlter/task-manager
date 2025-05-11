@@ -7,29 +7,29 @@ import {logan, logout} from "./store/user/userSlice.ts";
 import {useEffect} from "react";
 
 function App() {
-  const dispatch = useAppDispatch()
-  const checkAuth = async () => {
-    const token = getTokenFromLocalStorage()
-    try {
-      if (token) {
-        const data = await AuthService.getMe()
+    const dispatch = useAppDispatch()
+    const checkAuth = async () => {
+        const token = getTokenFromLocalStorage()
+        try {
+            if (token) {
+                const data = await AuthService.getMe()
 
-        if (data) {
-          dispatch(logan(data))
-        } else {
-          dispatch(logout())
+                if (data) {
+                    dispatch(logan(data))
+                } else {
+                    dispatch(logout())
+                }
+            }
+        } catch (err) {
+            console.log(err)
         }
-      }
-    } catch (err) {
-      console.log(err)
     }
-  }
 
-  useEffect(() => {
-    checkAuth()
-  }, [])
+    useEffect(() => {
+        checkAuth()
+    }, [])
 
-  return <RouterProvider router={router} />
+    return <RouterProvider router={router}/>
 }
 
 export default App

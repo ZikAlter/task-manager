@@ -10,4 +10,7 @@ export const AuthService = {
         const {data} = await instance.get<IUser>('auth/profile')
         if (data) return data
     },
+    getToken() {
+        return localStorage.getItem('token');
+    },
 }

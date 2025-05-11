@@ -8,22 +8,23 @@ import CreateUser from "../pages/CreateUser.tsx";
 import EditUser from "../pages/EditUser.tsx";
 import BanUser from "../pages/BanUser.tsx";
 import ProtectedRoute from "../components/ProtectedRoute.tsx";
+import Statistic from "../pages/Statistic.tsx";
 
 export const router = createBrowserRouter([
     {
         path: '/',
-        element: <Layout />,
-        errorElement: <ErrorPage />,
+        element: <Layout/>,
+        errorElement: <ErrorPage/>,
         children: [
             {
                 index: true,
-                element: <Home />,
+                element: <Home/>,
             },
             {
                 path: 'create-user',
                 element: (
                     <ProtectedRoute>
-                        <CreateUser />
+                        <CreateUser/>
                     </ProtectedRoute>
                 ),
             },
@@ -31,7 +32,7 @@ export const router = createBrowserRouter([
                 path: 'create-task',
                 element: (
                     <ProtectedRoute>
-                        <CreateTask />
+                        <CreateTask/>
                     </ProtectedRoute>
                 ),
             },
@@ -39,7 +40,7 @@ export const router = createBrowserRouter([
                 path: 'edit-user',
                 element: (
                     <ProtectedRoute>
-                        <EditUser />
+                        <EditUser/>
                     </ProtectedRoute>
                 ),
             },
@@ -47,13 +48,21 @@ export const router = createBrowserRouter([
                 path: 'ban-user',
                 element: (
                     <ProtectedRoute>
-                        <BanUser />
+                        <BanUser/>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'statistic',
+                element: (
+                    <ProtectedRoute>
+                        <Statistic/>
                     </ProtectedRoute>
                 ),
             },
             {
                 path: 'auth',
-                element: <Auth />,
+                element: <Auth/>,
             }
         ]
     }

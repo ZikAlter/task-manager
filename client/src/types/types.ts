@@ -6,6 +6,7 @@ export interface IUser {
     role: string
     token: string
 }
+
 export interface IUserData {
     login: string
     password: string

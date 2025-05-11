@@ -6,10 +6,10 @@ const Layout: FC = () => {
     return (
         <div className="font-roboto flex">
             <div className="w-1/4 h-screen container border-r-2">
-                <Menu />
+                <Menu/>
             </div>
             <div className="container">
-                <Outlet />
+                <Outlet/>
             </div>
         </div>
     );
