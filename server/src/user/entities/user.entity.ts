@@ -13,7 +13,7 @@ export class User {
     @Column({name: 'password', type: 'varchar'})
     password: string
 
-    @Column({name: 'role', type: 'varchar', default: E_Role["Admin"]})
+    @Column({name: 'role', type: 'varchar', default: E_Role["Default"]})
     role: E_Role
 
     @Column({name: 'surname', type: 'varchar'})

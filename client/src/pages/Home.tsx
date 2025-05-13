@@ -4,6 +4,7 @@ import {Link} from "react-router-dom";
 import {TaskService} from "../services/task.service";
 import {ITask} from "../types/task.interface";
 import dateFormat from "dateformat";
+import {MdFilterList} from "react-icons/md";
 
 const Home: FC = () => {
     const isAuth = useAuth();
@@ -32,10 +33,10 @@ const Home: FC = () => {
             {isAuth ? (
                 <div>
                     {/* Содержимое для авторизованных пользователей */}
-                    <h1 className="mt-4 mb-4 text-4xl font-bold text-blue-600">Список задач</h1>
+                    <h1 className="mt-4 mb-4 text-4xl font-bold text-blue-600 max-md:mt-10">Список задач</h1>
 
                     {/* Форма поиска */}
-                    <form className="mt-2">
+                    <form className="mt-2" onSubmit={(e) => e.preventDefault()}>
                         <label htmlFor="default-search"
                                className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                         <div className="relative">
@@ -48,10 +49,9 @@ const Home: FC = () => {
                             </div>
                             <input type="search" id="default-search"
                                    className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 focus:outline-none"
-                                   placeholder="Поиск нужной задачи..." required/>
-                            <button type="submit"
-                                    className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Найти
-                            </button>
+                                   placeholder="Поиск нужной задачи..."
+                                   autoComplete="off"
+                            />
                         </div>
                     </form>
 
@@ -65,10 +65,25 @@ const Home: FC = () => {
                             <table className="w-full text-sm text-left text-gray-500">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                                 <tr className="bg-gray-100">
-                                    <th scope="col" className="px-6 py-3">Дата создания</th>
+                                    <th scope="col" className="px-6 py-3 cursor-pointer hover:underline relative group">
+                                        <div className="flex items-center">
+                                            <MdFilterList className="mr-1 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                            <span>Дата создания</span>
+                                        </div>
+                                    </th>
                                     <th scope="col" className="px-6 py-3">Наименование задачи</th>
-                                    <th scope="col" className="px-6 py-3">Степень срочности</th>
-                                    <th scope="col" className="px-6 py-3">Автор задачи</th>
+                                    <th scope="col" className="px-6 py-3 cursor-pointer hover:underline relative group">
+                                        <div className="flex items-center">
+                                            <MdFilterList className="mr-1 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                            <span>Степень срочности</span>
+                                        </div>
+                                    </th>
+                                    <th scope="col" className="px-6 py-3 cursor-pointer hover:underline relative group">
+                                        <div className="flex items-center">
+                                            <MdFilterList className="mr-1 opacity-0 group-hover:opacity-100 transition-opacity"/>
+                                            <span>Автор задачи</span>
+                                        </div>
+                                    </th>
                                     <th scope="col" className="px-6 py-3">Действие</th>
                                 </tr>
                                 </thead>

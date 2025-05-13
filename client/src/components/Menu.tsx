@@ -35,6 +35,7 @@ const Menu: FC = () => {
     const logoutHandler = () => {
         dispatch(logout())
         removeTokenFromLocalStorage('token')
+        removeTokenFromLocalStorage('role')
         toast.success('Вы вышли из системы')
         navigate('/')
     }
@@ -70,22 +71,29 @@ const Menu: FC = () => {
                             </p>
                             <nav className="mt-4 flex flex-col text-center">
                                 <NavLink to={'/'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-700 mt-4'
+                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
                                 }>Список задач</NavLink>
+
+                                {/* Только для роли 'Админ' */}
+                                {userRole === 'Администратор' && (
+                                    <>
                                 <NavLink to={'/create-task'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-700 mt-4'
+                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
                                 }>Создать новую задачу</NavLink>
                                 <NavLink to={'/create-user'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-700 mt-4'
+                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
                                 }>Создать учетную запись</NavLink>
                                 <NavLink to={'/edit-user'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-700 mt-4'
+                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
                                 }>Редактировать пользователя</NavLink>
                                 <NavLink to={'/ban-user'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-700 mt-4'
+                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
                                 }>Заблокировать пользователя</NavLink>
+                                    </>
+                                )}
+
                                 <NavLink to={'/statistic'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-700 mt-4'
+                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
                                 }>Статистика</NavLink>
                             </nav>
                         </div>
@@ -95,10 +103,10 @@ const Menu: FC = () => {
                     <div className="flex flex-col">
                         <div className="flex mt-3">
                             <img src={anonim} alt="" className="w-[50px] h-[50px]"/>
-                            <h1 className="mb-5 text-sky-500">Неизвестный пользователь</h1>
+                            <h1 className="mb-5 text-blue-500 p-2">Неизвестный пользователь</h1>
                         </div>
                         <Link to={'/auth'}
-                              className='bg-sky-500 rounded-md px-6 py-2 hover:bg-sky-600 shadow-lg shadow-sky-400/90 text-white'>
+                              className='bg-sky-500 rounded-md py-2 px-5 hover:bg-sky-600 shadow-lg shadow-sky-400/90 text-white max-md:mt-0 max-md:mx-0'>
                             Войти на сайт
                         </Link>
                     </div>

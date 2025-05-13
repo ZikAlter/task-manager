@@ -14,7 +14,7 @@ export class CreateUserDto {
 
     @IsNotEmpty({message: 'Не должен быть пуст'})
     @IsEnum(E_Role, {message: 'Не содержит нужной роли доступа'})
-    readonly role: E_Role = E_Role.Admin
+    readonly role: E_Role = E_Role.Default
 
     @IsNotEmpty({message: 'Не должен быть пуст'})
     @IsString({message: 'Тип данных должен быть строковый'})
