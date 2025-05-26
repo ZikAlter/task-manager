@@ -1,5 +1,6 @@
 import {BadRequestException, Injectable} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
+import {UpdateUserDto} from './dto/update-user.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {User} from "./entities/user.entity";
 import {Repository} from "typeorm";
@@ -36,7 +37,6 @@ export class UserService {
     }
 
     async findOne(login: string) {
-        //return await this.userRepository.findOne({where: {login}})
         const user = await this.userRepository.findOne({where: {login}})
         if (user) {
             return user
@@ -48,6 +48,49 @@ export class UserService {
     async findAll() {
         return await this.userRepository.find();
     }
+
+    async update(id: number, updateUserDto: UpdateUserDto) {
+        const user = await this.userRepository.findOne({ where: { id } });
+
+        if (!user) {
+            throw new BadRequestException('Пользователь не найден');
+        }
+
+        // Подготовим обновлённые данные
+        let updatedFields = { ...updateUserDto };
+
+        // Если передан новый пароль — хешируем
+        if (updateUserDto.password) {
+            const salt = await genSalt(6);
+            const hashedPassword = await hash(updateUserDto.password, salt);
+            updatedFields = { ...updatedFields, password: hashedPassword };
+        }
+
+        // Обновим пользователя
+        await this.userRepository.update(id, updatedFields);
+
+        return { message: 'Пользователь успешно обновлен' };
+    }
+
+
+    /*async update(id: number, updateUserDto: UpdateUserDto) {
+        const user = await this.userRepository.findOne({ where: { id } });
+
+        if (!user) {
+            throw new BadRequestException('Пользователь не найден');
+        }
+
+        // Если передан новый пароль — хешируем
+        if (updateUserDto.password) {
+            const salt = await genSalt(6);
+            updateUserDto.password = await hash(updateUserDto.password, salt);
+        }
+
+        // Обновим пользователя
+        await this.userRepository.update(id, updateUserDto);
+        return { message: 'Пользователь успешно обновлен' };
+    }*/
+
 
     /*findAll() {
       return `This action returns all user`;

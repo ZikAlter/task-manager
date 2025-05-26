@@ -1,6 +1,7 @@
 import {FC, useEffect, useState} from "react";
 import axios from "axios";
 import {MdFilterList} from "react-icons/md";
+import {toast} from "react-toastify";
 
 interface User {
     id: number;
@@ -63,24 +64,18 @@ const BanUser: FC = () => {
             return 0;
         });
 
-   /* const toggleUserStatus = async (userId: number, currentStatus: boolean) => {
+    const toggleUserStatus = async (userId: number, currentStatus: boolean) => {
         try {
-            const newStatus = currentStatus === 'Активен' ? 'Блокирован' : 'Активен';
             await axios.patch(`http://localhost:3000/api/user/${userId}`, {
-                statusAccount: newStatus
+                statusAccount: !currentStatus // Меняем статус на противоположный
             });
-            await fetchUsers(); // Обновляем список после изменения
+            await fetchUsers(); // Перезагружаем пользователей
+            toast.success("Статус пользователя обновлен");
         } catch (error) {
-            console.error('Ошибка при изменении статуса пользователя:', error);
-            if (axios.isAxiosError(error)) {
-                console.error('Детали ошибки:', {
-                    message: error.message,
-                    status: error.response?.status,
-                    data: error.response?.data
-                });
-            }
+            toast.error('Ошибка при изменении статуса пользователя');
         }
-    };*/
+    };
+
 
     useEffect(() => {
         fetchUsers();
@@ -162,6 +157,7 @@ const BanUser: FC = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                     <button
+                                        onClick={() => toggleUserStatus(user.id, user.statusAccount)}
                                         className={`${
                                             user.statusAccount
                                                 ? 'bg-red-600 hover:bg-red-700 shadow-red-400/90'

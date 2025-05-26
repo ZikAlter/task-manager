@@ -61,9 +61,9 @@ const Menu: FC = () => {
                             </div>
 
                             <p className="mt-4">
-                                <button
-                                    className="bg-blue-600 text-white hover:bg-blue-700 shadow-lg py-3 px-4 rounded-lg mr-2 shadow-blue-400/90">Настройки
-                                </button>
+                                <NavLink to={'/setting'} className="bg-blue-600 text-white hover:bg-blue-700 shadow-lg py-4 px-4 rounded-lg mr-2 shadow-blue-400/90">
+                                    Настройки
+                                </NavLink>
                                 <button
                                     className="bg-red-600 text-white hover:bg-red-700 shadow-lg py-3 px-4 rounded-lg shadow-red-400/90"
                                     onClick={logoutHandler}>Выйти
@@ -74,21 +74,30 @@ const Menu: FC = () => {
                                     isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
                                 }>Список задач</NavLink>
 
-                                {/* Только для роли 'Админ' */}
+                                {/* Только для роли Администратор и Руководитель */}
+                                {userRole === 'Руководитель' && (
+                                    <>
+                                        <NavLink to={'/create-task'} className={({isActive}) =>
+                                            isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
+                                        }>Создать новую задачу</NavLink>
+                                    </>
+                                )}
+
+                                {/* Только для роли Администратор */}
                                 {userRole === 'Администратор' && (
                                     <>
-                                <NavLink to={'/create-task'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
-                                }>Создать новую задачу</NavLink>
-                                <NavLink to={'/create-user'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
-                                }>Создать учетную запись</NavLink>
-                                <NavLink to={'/edit-user'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
-                                }>Редактировать пользователя</NavLink>
-                                <NavLink to={'/ban-user'} className={({isActive}) =>
-                                    isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
-                                }>Заблокировать пользователя</NavLink>
+                                        <NavLink to={'/create-task'} className={({isActive}) =>
+                                            isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
+                                        }>Создать новую задачу</NavLink>
+                                        <NavLink to={'/create-user'} className={({isActive}) =>
+                                            isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
+                                        }>Создать учетную запись</NavLink>
+                                        <NavLink to={'/edit-user'} className={({isActive}) =>
+                                            isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
+                                        }>Редактировать пользователя</NavLink>
+                                        <NavLink to={'/ban-user'} className={({isActive}) =>
+                                            isActive ? 'text-white bg-gradient-to-r from-sky-400 to-blue-500 py-4 shadow-lg shadow-sky-400/90 hover:cursor-pointer rounded-2xl mt-4' : 'text-gray-600 mt-4'
+                                        }>Заблокировать пользователя</NavLink>
                                     </>
                                 )}
 

@@ -9,6 +9,8 @@ import EditUser from "../pages/EditUser.tsx";
 import BanUser from "../pages/BanUser.tsx";
 import ProtectedRoute from "../components/ProtectedRoute.tsx";
 import Statistic from "../pages/Statistic.tsx";
+import SettingPage from "../pages/SettingPage.tsx";
+import TaskPage from "../pages/TaskPage.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -21,6 +23,14 @@ export const router = createBrowserRouter([
                 element: <Home/>,
             },
             {
+                path: 'task',
+                element: (
+                    <ProtectedRoute>
+                        <TaskPage/>
+                    </ProtectedRoute>
+                ),
+            },
+            {
                 path: 'create-user',
                 element: (
                     <ProtectedRoute allowedRoles={['Администратор']}>
@@ -31,7 +41,7 @@ export const router = createBrowserRouter([
             {
                 path: 'create-task',
                 element: (
-                    <ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['Администратор', 'Руководитель']}>
                         <CreateTask/>
                     </ProtectedRoute>
                 ),
@@ -39,7 +49,7 @@ export const router = createBrowserRouter([
             {
                 path: 'edit-user',
                 element: (
-                    <ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['Администратор']}>
                         <EditUser/>
                     </ProtectedRoute>
                 ),
@@ -47,7 +57,7 @@ export const router = createBrowserRouter([
             {
                 path: 'ban-user',
                 element: (
-                    <ProtectedRoute>
+                    <ProtectedRoute allowedRoles={['Администратор']}>
                         <BanUser/>
                     </ProtectedRoute>
                 ),
@@ -57,6 +67,14 @@ export const router = createBrowserRouter([
                 element: (
                     <ProtectedRoute>
                         <Statistic/>
+                    </ProtectedRoute>
+                ),
+            },
+            {
+                path: 'setting',
+                element: (
+                    <ProtectedRoute>
+                        <SettingPage/>
                     </ProtectedRoute>
                 ),
             },
