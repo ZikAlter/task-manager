@@ -1,5 +1,9 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState, FormEvent } from "react";
 import axios from "axios";
+import { ICreateTask } from "../types/task.interface";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface User {
     id: number;
@@ -12,20 +16,68 @@ interface User {
 }
 
 const CreateTask: FC = () => {
+    const navigate = useNavigate();
     const [users, setUsers] = useState<User[]>([]);
+    const [formData, setFormData] = useState<ICreateTask>({
+        titleTask: '',
+        importance: 'Обычная',
+        user: 0,
+        endedAt: new Date(),
+        contractor: 0,
+        descript: ''
+    });
+
+    const reset = () => {
+        setFormData({
+            titleTask: '',
+            importance: 'Обычная',
+            user: 0,
+            endedAt: new Date(),
+            contractor: 0,
+            descript: ''
+        });
+    };
 
     useEffect(() => {
         axios.get<User[]>('http://localhost:3000/api/user')
             .then(response => setUsers(response.data))
-            .catch(error => console.error("Ошибка при загрузке пользователей:", error));
+            .catch(error => {
+                console.error("Ошибка при загрузке пользователей:", error);
+                toast.error("Не удалось загрузить список пользователей");
+            });
     }, []);
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        try {
+            await axios.post('http://localhost:3000/api/tasks', formData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            toast.success("Задача успешно создана");
+            reset();
+            //navigate('/');
+        } catch (error) {
+            console.error("Ошибка при создании задачи:", error);
+            toast.error("Произошла ошибка при создании задачи");
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [id]: id === 'endedAt' ? new Date(value) : value
+        }));
+    };
 
     return (
         <div>
             <h1 className="mt-4 mb-4 text-4xl font-bold text-center text-blue-600">Создать новую задачу</h1>
             <div className="flex justify-center items-center h-full">
-                <form className="flex flex-col w-[500px] h-fit shadow-xl rounded-2xl bg-white mt-4 mb-4 p-6">
-                    <label htmlFor="title_task" className="block mt-4 font-medium text-blue-500">
+                <form onSubmit={handleSubmit} className="flex flex-col w-[500px] h-fit shadow-xl rounded-2xl bg-white mt-4 mb-4 p-6">
+                    <label htmlFor="titleTask" className="block mt-4 font-medium text-blue-500">
                         Укажите наименование задачи:
                     </label>
                     <input
@@ -33,7 +85,10 @@ const CreateTask: FC = () => {
                         className="mt-2 py-3 shadow-md border-2 rounded-xl pl-2 bg-gray-50 outline-blue-500"
                         placeholder="Наименование задачи..."
                         autoComplete="off"
-                        id="title_task"
+                        id="titleTask"
+                        value={formData.titleTask}
+                        onChange={handleChange}
+                        required
                     />
 
                     <label htmlFor="importance" className="block mt-4 font-medium text-blue-500">
@@ -42,19 +97,26 @@ const CreateTask: FC = () => {
                     <select
                         id="importance"
                         className="mt-2 shadow-md border-2 rounded-xl bg-gray-50 text-gray-900 focus:outline-blue-500 p-2.5"
+                        value={formData.importance}
+                        onChange={handleChange}
+                        required
                     >
                         <option value="Обычная">Обычная</option>
                         <option value="Средняя">Средняя</option>
                         <option value="Срочно">Срочно</option>
                     </select>
 
-                    <label htmlFor="task_user" className="block mt-4 font-medium text-blue-500">
+                    <label htmlFor="contractor" className="block mt-4 font-medium text-blue-500">
                         Выберите исполнителя:
                     </label>
                     <select
-                        id="task_user"
+                        id="contractor"
                         className="mt-2 shadow-md border-2 rounded-xl bg-gray-50 text-gray-900 focus:outline-blue-500 p-2.5"
+                        value={formData.contractor}
+                        onChange={handleChange}
+                        required
                     >
+                        <option value="">Выберите исполнителя</option>
                         {users.map(user => (
                             <option key={user.id} value={user.id}>
                                 {user.surname} {user.firstName} {user.patronymic}
@@ -62,28 +124,29 @@ const CreateTask: FC = () => {
                         ))}
                     </select>
 
-                    <label htmlFor="date_task" className="block mt-4 font-medium text-blue-500">
+                    <label htmlFor="endedAt" className="block mt-4 font-medium text-blue-500">
                         Укажите крайний срок исполнения задачи:
                     </label>
                     <input
                         type="datetime-local"
                         className="mt-3 py-3 shadow-md border-2 rounded-xl pl-2 bg-gray-50 outline-blue-500"
                         autoComplete="off"
-                        id="date_task"
+                        id="endedAt"
+                        value={formData.endedAt.toLocaleString('sv', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }).replace(' ', 'T')}
+                        onChange={handleChange}
+                        required
                     />
 
-                    <label htmlFor="description" className="block mt-4 font-medium text-blue-500">
+                    <label htmlFor="descript" className="block mt-4 font-medium text-blue-500">
                         Опишите подробности задачи:
                     </label>
                     <textarea
-                        name="description"
-                        id="description"
-                        cols={20}
-                        rows={5}
+                        id="descript"
                         className="mt-3 py-3 shadow-md border-2 rounded-xl pl-2 bg-gray-50 outline-blue-500"
-                    >
-                        Описание задачи
-                    </textarea>
+                        value={formData.descript}
+                        onChange={handleChange}
+                        required
+                    />
 
                     <button
                         type="submit"

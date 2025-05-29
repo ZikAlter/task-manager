@@ -83,7 +83,7 @@ const BanUser: FC = () => {
 
     return (
         <div>
-            <h1 className="mt-4 mb-4 text-4xl font-bold text-blue-600">Изменить статус аккаунта</h1>
+            <h1 className="mt-4 mb-4 text-4xl font-bold text-blue-600 max-md:mt-10">Изменить статус аккаунта</h1>
 
             <form className="mt-2" onSubmit={(e) => e.preventDefault()}>
                 <label htmlFor="default-search"

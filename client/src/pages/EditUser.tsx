@@ -1,9 +1,20 @@
 import {FC, useEffect, useState} from "react";
 import axios from "axios";
 import {MdFilterList} from "react-icons/md";
+import {IoClose} from "react-icons/io5";
+import {toast} from "react-toastify";
 
 interface User {
     id: number;
+    login: string;
+    firstName: string;
+    surname: string;
+    patronymic: string;
+    role: string;
+    statusAccount: boolean;
+}
+
+interface EditUserForm {
     login: string;
     firstName: string;
     surname: string;
@@ -18,6 +29,19 @@ const EditUser: FC = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [sortConfig, setSortConfig] = useState<{ key: string; direction: 'asc' | 'desc' } | null>(null);
 
+    // Состояния для модального окна
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null);
+    const [formData, setFormData] = useState<EditUserForm>({
+        login: '',
+        firstName: '',
+        surname: '',
+        patronymic: '',
+        role: '',
+        statusAccount: true
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const fetchUsers = async () => {
         try {
             const response = await axios.get('http://localhost:3000/api/user');
@@ -29,16 +53,57 @@ const EditUser: FC = () => {
         }
     };
 
-    /*const toggleUserStatus = async (userId: number, currentStatus: boolean) => {
+    const handleOpenModal = (user: User) => {
+        setSelectedUser(user);
+        setFormData({
+            login: user.login,
+            firstName: user.firstName,
+            surname: user.surname,
+            patronymic: user.patronymic,
+            role: user.role,
+            statusAccount: user.statusAccount
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setSelectedUser(null);
+        setFormData({
+            login: '',
+            firstName: '',
+            surname: '',
+            patronymic: '',
+            role: '',
+            statusAccount: true
+        });
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value, type } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!selectedUser) return;
+
+        setIsSubmitting(true);
         try {
-            await axios.patch(`http://localhost:3000/api/user/${userId}`, {
-                statusAccount: !currentStatus
-            });
-            await fetchUsers();
+            await axios.patch(`http://localhost:3000/api/user/${selectedUser.id}`, formData);
+            await fetchUsers(); // Обновляем список пользователей
+            handleCloseModal();
+            toast.success("Данные пользователя успешно обновлены");
         } catch (error) {
-            console.error('Ошибка при изменении статуса пользователя:', error);
+            console.error('Ошибка при обновлении пользователя:', error);
+            toast.error("Произошла ошибка при обновлении данных пользователя");
+        } finally {
+            setIsSubmitting(false);
         }
-    };*/
+    };
 
     useEffect(() => {
         fetchUsers();
@@ -146,6 +211,7 @@ const EditUser: FC = () => {
                                 </td>
                                 <td className="px-6 py-4">
                                     <button
+                                        onClick={() => handleOpenModal(user)}
                                         className="bg-blue-600 text-white py-3 px-4 hover:bg-blue-700 rounded-lg shadow-lg shadow-blue-400/90">
                                         Подробнее
                                     </button>
@@ -163,6 +229,145 @@ const EditUser: FC = () => {
                     <p>Обновить список</p>
                 </button>
             </div>
+
+            {/* Модальное окно */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+                        <div className="flex justify-between items-center p-6 border-b">
+                            <h3 className="text-xl font-semibold text-blue-500">
+                                Редактирование данных
+                            </h3>
+                            <button
+                                onClick={handleCloseModal}
+                                className="text-red-400 hover:text-red-600 transition-colors"
+                                disabled={isSubmitting}
+                            >
+                                <IoClose size={24} />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className="p-6">
+                            <div className="space-y-4">
+                                <div>
+                                    <label htmlFor="login" className="block text-sm font-medium text-blue-500 mb-2">
+                                        Логин
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="login"
+                                        name="login"
+                                        value={formData.login}
+                                        onChange={handleInputChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        required
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="surname" className="block text-sm font-medium text-blue-500 mb-2">
+                                        Фамилия
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="surname"
+                                        name="surname"
+                                        value={formData.surname}
+                                        onChange={handleInputChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        required
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="firstName" className="block text-sm font-medium text-blue-500 mb-2">
+                                        Имя
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="firstName"
+                                        name="firstName"
+                                        value={formData.firstName}
+                                        onChange={handleInputChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        required
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="patronymic" className="block text-sm font-medium text-blue-500 mb-2">
+                                        Отчество
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="patronymic"
+                                        name="patronymic"
+                                        value={formData.patronymic}
+                                        onChange={handleInputChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        disabled={isSubmitting}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label htmlFor="role" className="block text-sm font-medium text-blue-500 mb-2">
+                                        Роль
+                                    </label>
+                                    <select
+                                        id="role"
+                                        name="role"
+                                        value={formData.role}
+                                        onChange={handleInputChange}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        required
+                                        disabled={isSubmitting}
+                                    >
+                                        <option value="Пользователь">Пользователь</option>
+                                        <option value="Руководитель">Руководитель</option>
+                                        <option value="Администратор">Администратор</option>
+                                    </select>
+                                </div>
+
+                                <div className="flex items-center">
+                                    <input
+                                        type="checkbox"
+                                        id="statusAccount"
+                                        name="statusAccount"
+                                        checked={formData.statusAccount}
+                                        onChange={handleInputChange}
+                                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                        disabled={isSubmitting}
+                                    />
+                                    <label htmlFor="statusAccount" className="ml-2 block text-sm text-gray-700">
+                                        Активный аккаунт
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end space-x-3 mt-6 pt-6 border-t">
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-green-400/90 shadow-lg"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? 'Сохранение...' : 'Сохранить'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleCloseModal}
+                                    className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors shadow-red-400/90 shadow-lg"
+                                    disabled={isSubmitting}
+                                >
+                                    Отмена
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

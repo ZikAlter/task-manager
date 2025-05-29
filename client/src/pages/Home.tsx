@@ -149,7 +149,7 @@ const Home: FC = () => {
                                             {`${task.user.surname} ${task.user.firstName} ${task.user.patronymic}`}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <Link to={`/task`}  className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                            <Link to={`/task/${task.id}`} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">
                                                 Подробнее
                                             </Link>
                                         </td>

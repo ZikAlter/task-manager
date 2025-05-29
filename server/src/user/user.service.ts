@@ -1,28 +1,25 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateUserDto} from './dto/create-user.dto';
 import {UpdateUserDto} from './dto/update-user.dto';
 import {InjectRepository} from "@nestjs/typeorm";
 import {User} from "./entities/user.entity";
 import {Repository} from "typeorm";
-import {genSalt, hash} from 'bcrypt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User) private readonly userRepository: Repository<User>,
-    ) {
-    }
+    ) {}
 
     async create(createUserDto: CreateUserDto) {
         const existUser = await this.userRepository.findOne({
-            where: {
-                login: createUserDto.login
-            },
-        })
-        if (existUser) throw new BadRequestException('Учетная запись пользователя существует!')
+            where: { login: createUserDto.login },
+        });
+        if (existUser) throw new BadRequestException('Учетная запись пользователя существует!');
 
-        const salt = await genSalt(6)
-        const hashedPassword = await hash(createUserDto.password, salt)
+        const salt = await bcrypt.genSalt(6);
+        const hashedPassword = await bcrypt.hash(createUserDto.password, salt);
 
         const newUser = await this.userRepository.save({
             login: createUserDto.login,
@@ -32,8 +29,9 @@ export class UserService {
             firstName: createUserDto.firstName,
             patronymic: createUserDto.patronymic,
             statusAccount: createUserDto.statusAccount,
-        })
-        return {newUser};
+        });
+
+        return { newUser };
     }
 
     async findOne(login: string) {
@@ -61,8 +59,8 @@ export class UserService {
 
         // Если передан новый пароль — хешируем
         if (updateUserDto.password) {
-            const salt = await genSalt(6);
-            const hashedPassword = await hash(updateUserDto.password, salt);
+            const salt = await bcrypt.genSalt(6);
+            const hashedPassword = await bcrypt.hash(updateUserDto.password, salt);
             updatedFields = { ...updatedFields, password: hashedPassword };
         }
 
@@ -71,6 +69,36 @@ export class UserService {
 
         return { message: 'Пользователь успешно обновлен' };
     }
+
+    async changePassword(userId: number, currentPassword: string, newPassword: string) {
+        // Находим пользователя
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user) {
+            throw new NotFoundException('Пользователь не найден');
+        }
+
+        // Проверяем текущий пароль
+        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isCurrentPasswordValid) {
+            throw new BadRequestException('Неверный текущий пароль');
+        }
+
+        // Проверяем, что новый пароль отличается от текущего
+        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        if (isSamePassword) {
+            throw new BadRequestException('Новый пароль должен отличаться от текущего');
+        }
+
+        // Хешируем новый пароль
+        const salt = await bcrypt.genSalt(10); // Используйте тот же salt, что и при регистрации
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        // Обновляем пароль
+        await this.userRepository.update(userId, { password: hashedNewPassword });
+
+        return { message: 'Пароль успешно изменён' };
+    }
+
 
 
     /*async update(id: number, updateUserDto: UpdateUserDto) {

@@ -5,19 +5,20 @@ import {UpdateTaskDto} from './dto/update-task.dto';
 import {JwtAuthGuard} from "../auth/guards/jwt-auth.guard";
 
 @Controller('tasks')
+@UseGuards(JwtAuthGuard)
 export class TaskController {
     constructor(private readonly taskService: TaskService) {
     }
 
     @Post()
-    create(@Body() createTaskDto: CreateTaskDto) {
+    create(@Body() createTaskDto: CreateTaskDto, @Req() req) {
+        createTaskDto.user = req.user.id;
         return this.taskService.create(createTaskDto);
     }
 
     @Get()
-    @UseGuards(JwtAuthGuard)
     findAll(@Req() req) {
-        return this.taskService.findAll(+req.user.id);
+        return this.taskService.findAll(req.user.id);
     }
 
     @Get(':id')
