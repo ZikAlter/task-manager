@@ -1,7 +1,7 @@
 import { FC, useEffect, useState, FormEvent } from "react";
 import axios from "axios";
 import { ICreateTask } from "../types/task.interface";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -16,7 +16,7 @@ interface User {
 }
 
 const CreateTask: FC = () => {
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
     const [users, setUsers] = useState<User[]>([]);
     const [formData, setFormData] = useState<ICreateTask>({
         titleTask: '',

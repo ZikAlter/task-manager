@@ -1,23 +1,16 @@
+import {IUser} from './user.interface';
+
 export interface ITask {
     id: number;
     titleTask: string;
+    description: string;
     importance: string;
-    user: {
-        id: number;
-        surname: string;
-        firstName: string;
-        patronymic: string;
-    };
-    createdAt: Date;
-    endedAt: Date;
-    contractor: {
-        id: number;
-        surname: string;
-        firstName: string;
-        patronymic: string;
-    };
-    descript: string;
+    createdAt: string;
+    user: IUser;
+    contractor: IUser;
     result: string;
+    endedAt: string;
+    descript: string;
 }
 
 export interface ICreateTask {

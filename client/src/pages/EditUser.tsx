@@ -160,7 +160,7 @@ const EditUser: FC = () => {
                 </div>
             </form>
 
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4 mb-4">
                 <table className="w-full text-sm text-left text-gray-500">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-100">
                     <tr className="bg-gray-100">
@@ -221,13 +221,6 @@ const EditUser: FC = () => {
                     )}
                     </tbody>
                 </table>
-            </div>
-            <div>
-                <button
-                    onClick={fetchUsers}
-                    className="flex self-center bg-green-600 text-white py-3 px-4 hover:bg-green-700 rounded-lg shadow-lg shadow-green-400/90 mt-5 mb-5">
-                    <p>Обновить список</p>
-                </button>
             </div>
 
             {/* Модальное окно */}

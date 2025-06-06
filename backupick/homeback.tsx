@@ -5,11 +5,9 @@ import {TaskService} from "../services/task.service";
 import {ITask} from "../types/task.interface";
 import dateFormat from "dateformat";
 import {MdFilterList} from "react-icons/md";
-import {useUser} from "../hooks/useUser.ts";
 
 const Home: FC = () => {
     const isAuth = useAuth();
-    const {user} = useUser();
     const [tasks, setTasks] = useState<ITask[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -17,17 +15,13 @@ const Home: FC = () => {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     useEffect(() => {
-        if (isAuth && user) loadTasks();
-    }, [isAuth, user]);
+        if (isAuth) loadTasks();
+    }, [isAuth]);
 
     const loadTasks = async () => {
         try {
             const data = await TaskService.getAll();
-            // Фильтруем задачи, показывая только те, где пользователь является автором или исполнителем, и статус не 'Выполнено'
-            const filteredData = data.filter(task => 
-                (task.user.id === user?.id || task.contractor?.id === user?.id) && task.result !== 'Выполнено'
-            );
-            setTasks(filteredData);
+            setTasks(data);
         } catch (error) {
             console.error('Ошибка при загрузке задач:', error);
         } finally {
@@ -77,7 +71,7 @@ const Home: FC = () => {
 
     return (
         <>
-            {isAuth && user ? (
+            {isAuth ? (
                 <div>
                     <h1 className="mt-4 mb-4 text-4xl font-bold text-blue-600 max-md:mt-10">Список задач</h1>
 
@@ -168,6 +162,10 @@ const Home: FC = () => {
 
                     {/* Кнопки */}
                     <div className="flex flex-row gap-x-10">
+                        <button onClick={loadTasks}
+                                className="bg-green-600 text-white py-3 px-4 hover:bg-green-700 rounded-lg shadow-lg mt-5 shadow-green-400/80">
+                            Обновить список задач
+                        </button>
                         <button
                             className="bg-blue-600 text-white py-3 px-4 hover:bg-blue-700 rounded-lg shadow-lg mt-5 shadow-blue-400/90">
                             Архив задач

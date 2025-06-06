@@ -29,6 +29,7 @@ export class AuthService {
         let success: string = 'Токен успешно выдан'
         return {
             success,
+            id,
             surname,
             firstName,
             patronymic,

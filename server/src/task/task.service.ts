@@ -37,19 +37,14 @@ export class TaskService {
 
     async findAll(id: number) {
         return await this.taskRepository.find({
-            where: {
-                user: {id},
-            },
+            where: [
+                { user: { id } },
+                { contractor: { id } }
+            ],
             relations: {
                 user: true,
                 contractor: true
             },
-            /*select: {
-              user: {
-                id: true,
-                email: true
-              }
-            },*/
         })
     }
 

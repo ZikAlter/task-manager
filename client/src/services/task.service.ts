@@ -44,4 +44,30 @@ export const TaskService = {
             throw error;
         }
     },
+
+    async updateStatus(id: number, result: string): Promise<void> {
+        const token = AuthService.getToken();
+        if (!token) {
+            throw new Error('JWT токен не найден. Авторизуйтесь.');
+        }
+        try {
+            await axios.patch(`${API_URL}/tasks/${id}`, { result }, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        } catch (error) {
+            console.error('Ошибка при обновлении статуса задачи:', error);
+            throw error;
+        }
+    },
+
+    async update(id: number, updateData: any): Promise<ITask> {
+        const token = AuthService.getToken();
+        if (!token) throw new Error('JWT токен не найден. Авторизуйтесь.');
+        const { data } = await axios.patch<ITask>(`${API_URL}/tasks/${id}`, updateData, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return data;
+    },
 };
